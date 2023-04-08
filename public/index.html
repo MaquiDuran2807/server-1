@@ -11,11 +11,19 @@
 
     <script src="socket.io/socket.io.js"></script>
     <script>
+        let socketid;
         var socket = io();
 
         socket.on('connect', function() {
             
             console.log('Conectado al servidor '+socket.id+typeof(socket.id))
+            socketid=socket.id;
+            fetch('http://localhost:3000/saveid',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"id":"1","socketid":socketid})})
         });
 
         socket.on('disconnect', function() {
@@ -27,6 +35,13 @@
         socket.emit('mensaje', { nombre: 'elian es gay' } );
 
         socket.on('mensaje', function( payload ){
+            console.log('Escuhando:', payload );
+        });
+        //hacer una peticion post para obtener el id del usuario
+        
+        socket.emit('mensaje-privado',{"para":"1"})
+
+        socket.on('driver-accept', function( payload ){
             console.log('Escuhando:', payload );
         });
 
